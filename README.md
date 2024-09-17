@@ -6,7 +6,7 @@ I learnt a lot while building the code little by little with my personal teacher
 ## Screenshot
 ![image](https://github.com/user-attachments/assets/21c58225-e741-4984-864b-8b0ba6726fea)
 
-## Deployment
+## Deployment options
 1. GitHub pages
 2. Cloudflare Workers/Pages
 3. Possibly other free static site hosters
