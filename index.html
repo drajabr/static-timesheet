@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness Schedule</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Orbitron:wght@400&family=Source+Code+Pro:wght@400&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			user-select: none; /* Prevent text selection for header and body cells */
+			/* Color Definitions */
+			--background-color: #121212; /* Default background color */
+			--foreground-color: #e0e0e0; /* Default text color */
+			--accent-color: #00AE3BFF; /* Main green accent color */
+			--accent-color-dark: #004819FF; /* Darker shade of green */
+			--accent-color-light: #00FF57FF; /* Lighter shade of green */
+			--accent-text-color: #BAEDC2FF; /* Text color on accent backgrounds */
+			--accent-background-color: #003E156B; /* Background color for accent elements */
+			--default-card-background: #1e1e1e; /* Default card background color */
+			--header-background-color: #333; /* Background color for headers and other elements */
+		}
+
+		/* General Body Styling */
+		body {
+			font-family: 'Roboto', sans-serif;
+			margin: 0;
+			padding: 0;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			background-color: var(--background-color);
+			color: var(--foreground-color);
+		}
+
+		.container {
+			max-width: 1800px;
+			margin: 10px;
+		}
+
+		/* Current Activity Card Styling */
+		.current-activity {
+			border: 1px solid var(--header-background-color);
+			border-radius: 10px;
+			background-color: var(--default-card-background); /* Accent background for current activity card */
+			padding: 20px;
+			margin-bottom: 20px;
+			box-shadow: 0 0 15px rgba(0,0,0,0.5);
+			text-align: center;
+			width: 100%;
+			box-sizing: border-box;
+		}
+
+		/* Current Time Styling */
+		.current-time {
+			font-family: 'Source Code Pro', monospace;
+			font-size: 3.6em;
+			color: var(--accent-text-color);
+			background: var(--header-background-color);
+			border-radius: 10px 10px 0 0;
+			padding:  10px 0 0 0;
+
+		}
+		.current-date {
+			font-family: 'Source Code Pro', monospace;
+			font-size: 1.4em;
+			color: var(--accent-text-color);
+			background: var(--header-background-color);
+			padding:  0 0 10px 0;
+			border-radius: 0 0 10px 10px;
+		}
+		/* Current Activity Name Styling */
+		.current-activity-name {
+			font-size: 1.4em;
+			margin: 10px 0;
+		}
+
+		/* Highlighted Current Activity Styling */
+		.current-activity-highlight {
+			margin-top: 15px;
+			font-size: 1.4em;
+			color: var(--accent-color-light);
+			font-weight: bold;
+			background: var(--header-background-color);
+			padding: 20px 0 20px 0;
+			border-radius: 10px;
+		}
+
+		/* Current Activity Details Styling */
+		.current-activity-details {
+			margin-top: 15px;
+			font-size: 1em;
+			color: #ccc;
+		}
+
+		/* Progress Bar Styling */
+		.progress-bar {
+			font-size: 2em;
+			height: 40px;
+			background-color: var(--accent-background-color);
+			border-radius: 10px;
+			margin-top: 10px;
+			position: relative;
+			width: 100%;
+			box-shadow: 0 0 5px rgba(0,0,0,0.3);
+			overflow: hidden;
+		}
+
+		/* Progress Bar Span Styling */
+		.progress-bar span {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100%;
+			background-color: var(--accent-color-dark);
+			border-radius: 10px;
+			width: 0%;
+			text-align: center;
+			color: var(--accent-text-color);
+			font-size: 0.6em;
+			position: absolute;
+			top: 0;
+			left: 0;
+			transition: width 0.1s ease-in-out;
+			white-space: nowrap;
+			padding: 0 10px;
+			box-sizing: border-box;
+		}
+
+		/* Next Activity Styling */
+		.next-activity {
+			color: var(--accent-color);
+			background-color: var(--header-background-color);
+			padding: 5px;
+			border-radius: 10px 10px 0 0;
+			font-size: 1.2em;
+			margin-top: 15px;
+		}
+
+		/* Next Activity Details Styling */
+		.next-activity-details {
+			background-color: var(--header-background-color);
+			color: var(--accent-color);
+			padding: 5px;
+			border-radius: 0 0 10px 10px;
+			font-size: 0.8em;
+		}
+
+		/* Schedule Table Styling */
+		.schedule-table {
+			border: 1px solid var(--header-background-color);
+			border-radius: 10px;
+			background-color: var(--default-card-background);
+			padding: 20px;
+			box-shadow: 0 0 15px rgba(0,0,0,0.5);
+		}
+
+		/* Table Styling */
+		.schedule-table table {
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+		/* Header Row Styling */
+		.schedule-table th, .schedule-table td {
+			padding: 10px;
+			border-bottom: 1px solid #444;
+			text-align: left;
+		}
+
+		/* Table Header Styling */
+		.schedule-table th {
+			background-color: var(--header-background-color);
+			color: var(--foreground-color);
+		}
+
+		/* Highlight Current Row Styling */
+		tr.highlight-current {
+			background-color: var(--accent-color-dark);
+		}
+
+		/* Table Border Radius and Styling */
+		table {
+			border-collapse: separate;
+			border-radius: 10px;
+			overflow: hidden;
+			border: 0px solid #ddd;
+		}
+
+		/* Last Table Row Styling */
+		/*tbody tr:last-child {
+			background-color: var(--accent-color-dark);
+			border-bottom-left-radius: 10px;
+			border-bottom-right-radius: 10px;
+		}*/
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="current-activity">
+            <div id="current-time" class="current-time"></div>
+			<div id="current-date" class="current-date"></div>
+            <div id="current-activity-name" class="current-activity-name"></div>
+            <div id="current-activity-details" class="current-activity-details"></div>
+            <div id="progress-bar" class="progress-bar"><span></span></div>
+            <div id="next-activity" class="next-activity"></div>
+            <div id="next-activity-details" class="next-activity-details"></div>
+        </div>
+        <div class="schedule-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Activity</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody id="schedule-body">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+		const schedule = [
+			{ time: '05:00 AM', activity: 'Wake Up + Stretch', duration: '15m' },
+			{ time: '05:15 AM', activity: 'Pray + Shower', duration: '45m' },
+			{ time: '06:00 AM', activity: 'Spend Time with Family + Leisure/Personal Projects', duration: '2h 30m' },
+			{ time: '08:30 AM', activity: 'Work (Treadmill)', duration: '1h 30m' },
+			{ time: '10:00 AM', activity: 'Take Lunch + Family Time', duration: '1h' },
+			{ time: '11:00 AM', activity: 'Continue Work (Cycle Chair)', duration: '3h' },
+			{ time: '02:00 PM', activity: 'Take a Break + Family Time', duration: '1h' },
+			{ time: '03:00 PM', activity: 'Work (Sitting)', duration: '2h' },
+			{ time: '05:00 PM', activity: 'Have Dinner + Light Activity (Walk)', duration: '1h' },
+			{ time: '06:00 PM', activity: 'Continue Work (Treadmill)', duration: '2h30m' },
+			{ time: '08:30 PM', activity: 'Wrap Up Work for the Day', duration: '15m' },
+			{ time: '08:45 PM', activity: 'Day Reflection + Tomorrow Plan', duration: '15m' },
+			{ time: '09:30 PM', activity: 'Family Time', duration: '2h 15m' },
+		];
+
+function updateTimeAndSchedule() {
+    const now = new Date();
+    const currentTimeEl = document.getElementById('current-time');
+    currentTimeEl.innerText = now.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hour12: true,
+    });
+    const currentDateEl = document.getElementById('current-date');
+    currentDateEl.innerText = now.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+    });
+
+    const currentActivityEl = document.getElementById('current-activity-name');
+    const currentActivityDetailsEl = document.getElementById('current-activity-details');
+    const progressBarEl = document.getElementById('progress-bar').querySelector('span');
+    const nextActivityEl = document.getElementById('next-activity');
+    const nextActivityDetailsEl = document.getElementById('next-activity-details');
+    const scheduleBodyEl = document.getElementById('schedule-body');
+
+    scheduleBodyEl.innerHTML = '';
+
+    let currentActivityIndex = -1;
+    let nextActivityIndex = -1;
+    let currentActivityStartTime, currentActivityEndTime;
+
+    schedule.forEach((item, index) => {
+        const [startTime, endTime] = getTimeRange(index);
+        const isCurrent = now >= startTime && now < endTime;
+
+        if (isCurrent) {
+            currentActivityIndex = index;
+            currentActivityStartTime = startTime;
+            currentActivityEndTime = endTime;
+        }
+
+        if (nextActivityIndex === -1 && now < startTime) {
+            nextActivityIndex = index;
+        }
+
+        const tr = document.createElement('tr');
+        tr.className = isCurrent ? 'highlight-current' : (index === nextActivityIndex ? 'highlight-next' : '');
+        const timeTd = document.createElement('td');
+        timeTd.textContent = item.time;
+        tr.appendChild(timeTd);
+        const activityTd = document.createElement('td');
+        activityTd.textContent = item.activity;
+        tr.appendChild(activityTd);
+        const durationTd = document.createElement('td');
+        durationTd.textContent = item.duration;
+        tr.appendChild(durationTd);
+
+        scheduleBodyEl.appendChild(tr);
+    });
+
+    if (currentActivityIndex !== -1) {
+        const currentActivity = schedule[currentActivityIndex];
+        currentActivityEl.innerHTML = `<div class="current-activity-highlight">${currentActivity.activity}</div>`;
+        const totalMinutes = Math.floor((currentActivityEndTime - currentActivityStartTime) / 60000);
+        const remainingMinutes = Math.floor((currentActivityEndTime - now) / 60000);
+        const elapsedMinutes = totalMinutes - remainingMinutes;
+        const elapsedTime = now - currentActivityStartTime;
+
+        let remainingSeconds = Math.floor((currentActivityEndTime - now) / 1000);
+        let remainingFormattedTime = remainingSeconds >= 3600
+            ? new Date(remainingSeconds * 1000).toISOString().substring(11, 19)
+            : new Date(remainingSeconds * 1000).toISOString().substring(14, 19);
+
+        const progressPercentage = (elapsedTime / (currentActivityEndTime - currentActivityStartTime)) * 100;
+        progressBarEl.style.width = `${progressPercentage}%`;
+        progressBarEl.textContent = `Elapsed: ${elapsedMinutes}m | Remaining: ${remainingFormattedTime}`;
+    } else {
+        currentActivityEl.textContent = 'No current activity';
+        currentActivityDetailsEl.textContent = '';
+        progressBarEl.style.width = '0%';
+        progressBarEl.textContent = '';
+    }
+
+    if (nextActivityIndex !== -1) {
+        const nextActivity = schedule[nextActivityIndex];
+        nextActivityEl.textContent = `${nextActivity.activity}`;
+        nextActivityDetailsEl.textContent = `Starts at: ${nextActivity.time} for ${nextActivity.duration}`;
+    } else {
+        nextActivityEl.textContent = 'Well done, You deserve a good sleep!';
+        nextActivityDetailsEl.textContent = 'See you tomorrow';
+    }
+}
+
+function getTimeRange(index) {
+    const startTimeStr = schedule[index].time;
+    const startTimeParts = startTimeStr.match(/(\d+):(\d+)\s*(AM|PM)/);
+    const startHours = parseInt(startTimeParts[1], 10) % 12 + (startTimeParts[3] === 'PM' ? 12 : 0);
+    const startMinutes = parseInt(startTimeParts[2], 10);
+
+    const durationParts = schedule[index].duration.match(/(\d+)\s*(h|m)/g);
+    let totalMinutes = 0;
+    durationParts.forEach(part => {
+        const timeValue = parseInt(part.match(/\d+/)[0], 10);
+        const timeUnit = part.match(/h|m/)[0];
+        totalMinutes += timeUnit === 'h' ? timeValue * 60 : timeValue;
+    });
+
+    const startTime = new Date();
+    startTime.setHours(startHours, startMinutes, 0, 0);
+    const endTime = new Date(startTime.getTime() + totalMinutes * 60000);
+
+    return [startTime, endTime];
+}
+
+window.onload = function() {
+    updateTimeAndSchedule();
+    setInterval(updateTimeAndSchedule, 1000);
+};
+
+
+    </script>
+</body>
+</html>
